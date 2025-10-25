@@ -1,0 +1,37 @@
+# Python virtual environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.env.*
+*.env
+
+# Logs
+*.log
+
+# Streamlit artifacts
+.streamlit/
+*.db
+*.sqlite3
+
+# Workspace / generated code (optional)
+workspace/*
+!workspace/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# GitHub Actions / CI caches
+*.cache
