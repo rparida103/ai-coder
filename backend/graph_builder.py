@@ -6,12 +6,14 @@ from agents.developer import developer
 from agents.test_engineer import test_engineer
 from agents.deployer import deployer
 
+
 class DevState(TypedDict):
     prompt: str
     design_plan: str
     code: str
     tests: str
     deployment_guide: str
+
 
 def build_graph():
     graph = StateGraph(DevState)

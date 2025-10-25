@@ -5,7 +5,10 @@ st.set_page_config(page_title="AI Coder", layout="wide")
 
 st.title("🤖 AI Coder – Autonomous Python Dev Agents")
 
-user_prompt = st.text_area("Enter your project idea:", placeholder="e.g., Build a REST API for task management")
+user_prompt = st.text_area(
+    "Enter your project idea:",
+    placeholder="e.g., Build a REST API for task management",
+)
 run_button = st.button("Generate Project")
 
 if run_button and user_prompt.strip():
