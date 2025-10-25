@@ -2,7 +2,6 @@ import streamlit as st
 from backend.graph_builder import build_graph
 
 st.set_page_config(page_title="AI Coder", layout="wide")
-
 st.title("🤖 AI Coder – Autonomous Python Dev Agents")
 
 user_prompt = st.text_area(
@@ -18,14 +17,16 @@ if run_button and user_prompt.strip():
         result = graph.invoke(state)
 
     st.success("✅ Generation Complete!")
-    st.subheader("🧠 Design Plan")
-    st.code(result["design_plan"], language="markdown")
 
-    st.subheader("💻 Generated Code")
-    st.code(result["code"], language="python")
+    # Collapsible sections using st.expander
+    with st.expander("🧠 Design Plan", expanded=True):
+        st.code(result["design_plan"], language="markdown")
 
-    st.subheader("🧪 Unit Tests")
-    st.code(result["tests"], language="python")
+    with st.expander("💻 Generated Code", expanded=True):
+        st.code(result["code"], language="python")
 
-    st.subheader("🚀 Deployment Guide")
-    st.code(result["deployment_guide"], language="markdown")
+    with st.expander("🧪 Generated Unit Tests", expanded=False):
+        st.code(result["tests"], language="python")
+
+    with st.expander("🚀 Deployment Guide", expanded=False):
+        st.code(result["deployment_guide"], language="markdown")
