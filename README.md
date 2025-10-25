@@ -33,6 +33,7 @@ Features
 
 Architecture
 
+<pre>
 User Prompt
      │
      ▼
@@ -71,6 +72,7 @@ User Prompt
            │
            ▼
         Output
+</pre>
 
 	•	LangGraph orchestrates agent nodes with a shared state.
 	•	LLM (GPT-4o-mini) is invoked in each agent node via llm.invoke(prompt).
