@@ -10,15 +10,16 @@ if "result" not in st.session_state:
     st.session_state.result = None
 if "pr_link" not in st.session_state:
     st.session_state.pr_link = None
-if "clear_triggered" not in st.session_state:
-    st.session_state.clear_triggered = False
+if "clear_counter" not in st.session_state:
+    st.session_state.clear_counter = 0
 
 # Text area for project idea
 user_prompt = st.text_area(
     "Enter your project idea:",
     placeholder="e.g., Build a REST API for task management",
-    value="" if st.session_state.get("clear_triggered") else "",
-    key="user_prompt",
+    value="", # Set to an empty default value
+    # Use a dynamic key based on the counter
+    key=f"user_prompt_{st.session_state.clear_counter}",
 )
 
 # Buttons row
@@ -32,11 +33,7 @@ with col2:
 if clear_button:
     st.session_state.result = None
     st.session_state.pr_link = None
-
-    # --- The Fix: Delete the widget's key and Rerun ---
-    if "user_prompt" in st.session_state:
-        del st.session_state.user_prompt
-
+    st.session_state.clear_counter += 1
     st.rerun()
 
 # Generate project
