@@ -1,30 +1,34 @@
 from langgraph.graph import StateGraph, END
-from typing import TypedDict
+from typing import TypedDict, Dict
 
-from agents.dev_lead import development_lead
+# Assuming agents and llm_utils are available
+from agents.architect import architect
 from agents.developer import developer
 from agents.test_engineer import test_engineer
 from agents.deployer import deployer
 
 
+FilesDict = Dict[str, str]
+
+
 class DevState(TypedDict):
     prompt: str
     design_plan: str
-    code: str
-    tests: str
+    # CRITICAL CHANGE: Use a dictionary for multi-file storage
+    files: FilesDict
     deployment_guide: str
 
 
 def build_graph():
     graph = StateGraph(DevState)
 
-    graph.add_node("development_lead", development_lead)
+    graph.add_node("architect", architect)
     graph.add_node("developer", developer)
     graph.add_node("test_engineer", test_engineer)
     graph.add_node("deployer", deployer)
 
-    graph.set_entry_point("development_lead")
-    graph.add_edge("development_lead", "developer")
+    graph.set_entry_point("architect")
+    graph.add_edge("architect", "developer")
     graph.add_edge("developer", "test_engineer")
     graph.add_edge("test_engineer", "deployer")
     graph.add_edge("deployer", END)

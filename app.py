@@ -10,6 +10,7 @@ if "result" not in st.session_state:
     st.session_state.result = None
 if "pr_link" not in st.session_state:
     st.session_state.pr_link = None
+# CRITICAL FIX: Counter for clearing the text area
 if "clear_counter" not in st.session_state:
     st.session_state.clear_counter = 0
 
@@ -17,8 +18,8 @@ if "clear_counter" not in st.session_state:
 user_prompt = st.text_area(
     "Enter your project idea:",
     placeholder="e.g., Build a REST API for task management",
-    value="", # Set to an empty default value
-    # Use a dynamic key based on the counter
+    value="",  # Set to an empty default value
+    # CRITICAL FIX: Use a dynamic key based on the counter
     key=f"user_prompt_{st.session_state.clear_counter}",
 )
 
@@ -29,11 +30,14 @@ with col1:
 with col2:
     clear_button = st.button("Clear All")
 
-# Clear all logic
+# Clear all logic (The working fix)
 if clear_button:
     st.session_state.result = None
     st.session_state.pr_link = None
+
+    # Increment the counter to force the text_area key to change on rerun
     st.session_state.clear_counter += 1
+
     st.rerun()
 
 # Generate project
@@ -43,14 +47,9 @@ if run_button and user_prompt.strip():
         state = {"prompt": user_prompt}
         result = graph.invoke(state)
 
-        # Wrap code/tests into files if 'files' key is missing
-        if "files" not in result:
-            files = {}
-            if "code" in result and result["code"]:
-                files["app.py"] = result["code"]
-            if "tests" in result and result["tests"]:
-                files["tests/test_app.py"] = result["tests"]
-            result["files"] = files
+        # 🛑 LOGIC REMOVED: Rely entirely on the 'files' key from the agents
+        # The agents (developer, test_engineer) are now responsible for ensuring
+        # that 'result' contains a correct 'files' dictionary.
 
         st.session_state.result = result
         st.session_state.pr_link = None  # reset PR link for new generation
@@ -66,13 +65,16 @@ if st.session_state.result:
     with st.expander("💻 Generated Code", expanded=False):
         for fname, content in result.get("files", {}).items():
             if not fname.startswith("tests/"):
-                st.subheader(fname)
+                # Escape underscores for proper display
+                display_name = fname.replace("_", "\\_")
+                st.markdown(f"**📄 {display_name}**", unsafe_allow_html=False)
                 st.code(content, language="python")
 
     with st.expander("🧪 Unit Tests", expanded=False):
         for fname, content in result.get("files", {}).items():
             if fname.startswith("tests/"):
-                st.subheader(fname)
+                display_name = fname.replace("_", "\\_")
+                st.markdown(f"**📄 {display_name}**", unsafe_allow_html=False)
                 st.code(content, language="python")
 
     with st.expander("🚀 Deployment Guide", expanded=False):
@@ -80,14 +82,16 @@ if st.session_state.result:
 
     # Optional: Create Pull Request button
     if st.button("Create Pull Request"):
+        # The files dictionary already contains ALL files (code, tests, config)
         project_files = result.get("files", {}).copy()
+
         # Add README.md with deployment guide
         project_files["README.md"] = "# Auto-generated project\n" + result.get(
             "deployment_guide", ""
         )
         with st.spinner("Creating PR..."):
             pr_link = create_pr(
-                pr_title="Add new Python project via DevSquad AI",
+                pr_title=f"Add new Python project: {user_prompt[:50]}...",
                 code_files=project_files,
             )
             st.session_state.pr_link = pr_link
