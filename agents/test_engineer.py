@@ -34,7 +34,7 @@ def test_engineer(state: Dict) -> Dict:
     CRITICAL 2: **ONLY include `tests/__init__.py` or
         any other `__init__.py` files IF they are strictly required**.
         If you include them, they must be completely empty.
-    CRITICAL 3: Output your response as a single valid JSON object wrapped in markdown fences, like:
+    CRITICAL 3: Output your response as a JSON object with proper line breaks in code values (do NOT escape newlines or indentation), like:
 
     ```json
     {{
